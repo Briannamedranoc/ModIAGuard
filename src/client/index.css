@@ -1,0 +1,148 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+@custom-variant light (&:where([data-theme='light'], [data-theme='light'] *));
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  :root,
+  [data-theme='dark'] {
+    color-scheme: dark;
+    --app-bg: #0a0b10;
+    --app-bg-secondary: #0d0f15;
+    --app-surface: #020617;
+    --app-surface-elevated: #0f172a;
+    --app-surface-hover: #1e293b;
+    --app-border: rgb(30 41 59 / 0.9);
+    --app-text: #f1f5f9;
+    --app-text-muted: #94a3b8;
+    --app-text-subtle: #64748b;
+    --app-accent-glow: rgb(139 92 246 / 0.2);
+  }
+
+  [data-theme='light'] {
+    color-scheme: light;
+    --app-bg: #f1f5f9;
+    --app-bg-secondary: #e2e8f0;
+    --app-surface: #ffffff;
+    --app-surface-elevated: #f8fafc;
+    --app-surface-hover: #f1f5f9;
+    --app-border: rgb(203 213 225);
+    --app-text: #0f172a;
+    --app-text-muted: #475569;
+    --app-text-subtle: #64748b;
+    --app-accent-glow: rgb(139 92 246 / 0.12);
+  }
+
+  html {
+    @apply antialiased;
+  }
+
+  body {
+    background-color: var(--app-bg);
+    color: var(--app-text);
+    @apply min-h-screen font-sans;
+  }
+
+  #root {
+    @apply min-h-screen;
+  }
+}
+
+@layer utilities {
+  .animate-in.fade-in.slide-in-from-bottom {
+    animation: fade-slide-in 0.5s ease-out forwards;
+  }
+
+  .theme-shell {
+    background: linear-gradient(
+      to bottom,
+      var(--app-bg),
+      var(--app-bg-secondary)
+    );
+    color: var(--app-text);
+  }
+
+  .theme-sidebar {
+    background-color: var(--app-surface);
+    border-color: var(--app-border);
+  }
+
+  .theme-navbar {
+    background-color: color-mix(in srgb, var(--app-surface) 85%, transparent);
+    border-color: var(--app-border);
+  }
+
+  .theme-main-glow {
+    background-image: radial-gradient(
+      ellipse at top,
+      var(--app-accent-glow),
+      transparent 70%
+    );
+  }
+}
+
+/* Light theme: cards and module surfaces */
+@layer components {
+  [data-theme='light'] .card-enter {
+    border-color: rgb(226 232 240) !important;
+    background-color: #ffffff !important;
+    color: #0f172a;
+  }
+
+  [data-theme='light'] .card-enter .text-white {
+    color: #0f172a !important;
+  }
+
+  [data-theme='light'] .card-enter .text-slate-100,
+  [data-theme='light'] .card-enter .text-slate-200 {
+    color: #1e293b !important;
+  }
+
+  [data-theme='light'] .card-enter .text-slate-300,
+  [data-theme='light'] .card-enter .text-slate-400 {
+    color: #475569 !important;
+  }
+
+  [data-theme='light'] .card-enter .text-slate-500 {
+    color: #64748b !important;
+  }
+
+  [data-theme='light'] .card-enter .bg-slate-950\/60,
+  [data-theme='light'] .card-enter .bg-slate-950\/40,
+  [data-theme='light'] .card-enter .bg-slate-950\/50,
+  [data-theme='light'] .card-enter .bg-slate-900\/60,
+  [data-theme='light'] .card-enter .bg-slate-900\/80,
+  [data-theme='light'] .card-enter .bg-slate-900 {
+    background-color: #f8fafc !important;
+  }
+
+  [data-theme='light'] .card-enter .border-slate-800\/80,
+  [data-theme='light'] .card-enter .border-slate-800\/90,
+  [data-theme='light'] .card-enter .border-slate-700\/80 {
+    border-color: rgb(226 232 240) !important;
+  }
+
+  [data-theme='light'] .theme-nav-link-inactive {
+    color: #475569 !important;
+  }
+
+  [data-theme='light'] .theme-nav-link-inactive:hover {
+    background-color: #f1f5f9 !important;
+    color: #0f172a !important;
+  }
+}
+
+@keyframes fade-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

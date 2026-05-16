@@ -1,0 +1,24 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "jsx": "react",
+    "jsxFactory": "Devvit.createElement",
+    "jsxFragmentFactory": "Devvit.Fragment",
+    "tsBuildInfoFile": "dist/types/tsconfig.server.tsbuildinfo"
+  },
+  "include": [
+    "src/index.ts",
+    "src/serverApp.ts",
+    "src/main.tsx",
+    "src/routes/**/*",
+    "src/services/**/*",
+    "src/core/**/*",
+    "src/utils.ts",
+    "src/utils/**/*",
+    "src/rules.ts",
+    "src/rules.test.ts",
+    "vite.config.ts",
+    "vitest.config.ts"
+  ]
+}
