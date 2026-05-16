@@ -1,77 +1,270 @@
-# Mod Guardian (Devvit)
+📘 ModAiGuard — AI-Powered Moderation Suite for Reddit (Devvit)
 
-**Mod Guardian** es una app de moderación para Reddit construida con [Devvit Web](https://developers.reddit.com/) (servidor TypeScript + Hono + Vite). El slug técnico de la app en Reddit es `modaiguard` (configurado en `devvit.json`).
+A complete, production-ready moderation platform built for the Reddit Mod Tools Hackathon.
 
-Incluye:
+⸻
 
-- **Automoderación en nuevos posts**: trigger `onPostSubmit` que analiza título, cuerpo y enlaces.
-- **Reglas demo**: palabras tipo spam, lenguaje tóxico básico y enlaces sospechosos (acortadores, IP literal, algunos TLD).
-- **Acción**: si hay infracciones, el post se **filtra** a la cola de moderación (`reddit.filter`) para revisión humana (menos agresivo que borrar al instante).
-- **Herramientas “Mop”** (plantilla original): limpieza masiva de comentarios desde el menú de mods.
+🚀 Overview
 
-## Configuración del proyecto
+ModAiGuard is an advanced, AI-powered moderation suite for Reddit — built on Reddit Devvit, using:
 
-| Archivo | Rol |
-| --- | --- |
-| `devvit.json` | **Fuente de verdad** para Devvit CLI (nombre, permisos, triggers, menús, build). |
-| `devvit.yaml` | Espejo legible en YAML; **el CLI no lo carga** salvo que Reddit lo documente explícitamente — mantenlo alineado con `devvit.json` si lo usas como referencia. |
-| `src/index.ts` | Punto de entrada del servidor (requerido por `@devvit/start`): arranca Hono con `serve`. |
-| `src/main.ts` | Ensambla rutas `/api` e `/internal/*`. |
-| `src/routes/triggers.ts` | `onAppInstall` + **`onPostSubmit`** → llama a las reglas y filtra si aplica. |
-| `src/rules.ts` | Listas y evaluación de reglas. |
-| `src/utils.ts` | Normalización de IDs (`t3_`), texto del post y extracción de URLs. |
+* Hono backend
+* React + Vite dashboard
+* Devvit Web API
+* Redis KV
+* Lucide UI + Tailwind
 
-## Requisitos
+It provides moderators with an end-to-end workflow to detect, review, take action, audit logs, configure automation, generate AI recommendations, and run full auto-moderation — all inside a custom webview panel inside Reddit.
 
-- Node.js **≥ 22.2** (según `package.json`).
-- Cuenta de desarrollador y CLI autenticada (`npm run login`).
+This project was fully developed for the 2026 Reddit Mod Tools & Migrated Apps Hackathon.
 
-## Comandos
+⸻
 
-```bash
-npm install
-npm run dev        # playtest: build + instala en el sub de desarrollo y streaming de logs
-npm run build      # empaqueta el servidor a dist/server/index.cjs
-npm run type-check # tsc
-npm run lint       # eslint
-npm run test       # vitest (reglas en src/rules.test.ts)
-npm run deploy     # type-check + lint + test + devvit upload
-```
+🎯 Key Features
 
-## Flujo de moderación automática
+🔥 1. Toxicity Analyzer (AI)
 
-1. Un usuario publica un post en un sub donde la app está instalada.
-2. Reddit invoca `POST /internal/triggers/on-post-submit` (declarado en `devvit.json`).
-3. El handler lee `post` / `author`, arma el texto con `collectPostText`, extrae URLs y ejecuta `runModerationRules`.
-4. Si hay violaciones, se registra cada una con `console.warn` y se llama a `reddit.filter` con un motivo combinado.
-5. Si no hay violaciones, solo se deja traza en consola.
+Analyze text (comments or posts) with a full signal breakdown:
 
-Se omiten posts ya marcados como spam/eliminados y el usuario `AutoModerator`.
+* Insult
+* Hate
+* Threat
+* Overall toxicity score
+* Color-coded risk visualization
+* Animated progress bars
 
-## Personalización
+🧨 2. Spam Detector (AI)
 
-- Edita listas en `src/rules.ts` (`SPAM_PHRASES`, `TOXIC_TERMS`, dominios acortadores, etc.).
-- Para **borrar** en lugar de filtrar, puedes sustituir `reddit.filter` por `reddit.remove(postId, true | false)` según tu política (más riesgo de falsos positivos).
+Signal-based spam analysis:
 
-## Estructura actual del repo
+* Repeated phrases
+* Suspicious URLs
+* Keyword patterns
+* Global spam risk score
+* Reason breakdown
 
-```
+🤖 3. AI Moderator Recommendations
+
+Combine toxicity + spam → AI recommends:
+
+* APPROVE
+* NEEDS CONTEXT
+* SPAM
+* REMOVE
+
+Rules:
+
+toxicity > 60% → remove
+spam > 60% → remove
+spam > 40% → spam
+toxicity > 30% → needs context
+otherwise → approve
+
+👁 4. Report Review with AI Banners
+
+View modqueue items with:
+
+* Live AI banner on each post
+* Quick actions:
+    * Approve
+    * Needs Context
+    * Spam
+    * Remove
+* Automatic logging
+* Auto-responder integration
+
+📜 5. Logs (Complete Audit Trail)
+
+Each action (manual or automatic) is logged with:
+
+* Moderator
+* Action
+* Source (AIEngine, ReportReview, DemoMode)
+* Toxicity & spam at action time
+* AI recommendation
+* Timestamp
+
+🕵️ 6. History Lookup
+
+Query any ThingID to see:
+
+* Full action timeline
+* AI scores
+* Rules triggered
+* Who made each decision
+
+🤖 7. Auto-Responder Rules
+
+Rules with:
+
+* triggers[]
+* AI response text
+* enabled/disabled state
+* delete rules
+* automatic matching during moderation
+
+Logged but not posted publicly (safe for mods).
+
+⚙️ 8. Auto-Moderation Engine (1-click)
+
+Runs real moderation automatically in the mod queue:
+
+* Pulls Reddit modqueue
+* Runs toxicity + spam
+* Applies AI recommendation
+* Takes real Reddit actions:
+    * approve
+    * remove
+    * mark as spam
+    * ignore reports
+* Logs everything as auto: true
+
+This is optional but extremely powerful.
+
+🧪 9. Demo Mode (Safe Playground)
+
+Because testing on real communities is hard:
+
+* Generate fake flagged posts
+* AI banners included
+* Simulate mod actions
+* Simulated actions go to logs (no Reddit API calls)
+
+Perfect for hackathon judging.
+
+🧭 10. Full Custom Dashboard (React)
+
+Professional UI:
+
+* Dark theme
+* Animated sidebar
+* Nav highlighting
+* ModulePage layout
+* Cards, badges, loaders, progress bars
+* Seamless mod experience
+
+⸻
+
+🏗 Tech Stack
+
+Backend
+
+* TypeScript
+* Hono
+* Devvit Web API
+* Redis KV (lists + JSON)
+* Custom REST routes /api/...
+
+Frontend
+
+* React
+* React Router
+* Vite
+* TailwindCSS
+* Lucide Icons
+
+Devvit
+
+* Menus
+* Custom post webviews
+* Subreddit mod access
+* Triggers / server components
+* Permissions: redditAPI, key-value storage
+
+📦 Project Structure
+
 src/
-├── index.ts              # Entry del servidor Devvit
-├── main.ts               # Construcción de la app Hono
-├── utils.ts              # Helpers de texto / IDs / URLs
-├── rules.ts              # Motor de reglas básicas
-├── rules.test.ts         # Tests de reglas
-├── core/
-│   └── nuke.ts           # Lógica “Mop” (bulk comments)
-└── routes/
-    ├── api.ts
-    ├── forms.ts
-    ├── menu.ts
-    └── triggers.ts       # Triggers + Mod Guardian onPostSubmit
-```
+├── client/                    # Full React dashboard
+│   ├── App.tsx
+│   ├── layouts/
+│   ├── components/
+│   └── modules/
+│       ├── toxicity-analyzer/
+│       ├── spam-detector/
+│       ├── report-review/
+│       ├── moderator-recommendations/
+│       ├── auto-responder/
+│       ├── auto-moderation/
+│       ├── demo-mode/
+│       ├── logs/
+│       └── history/
+│
+├── routes/                    # Backend API endpoints
+├── services/                  # Business logic (AI, logs, spam, toxicity)
+├── utils/
+└── serverApp.ts               # Hono router for Devvit Web
+🧑‍🏫 How Mods Use It
 
-## Documentación
+Inside a subreddit:
 
-- [Triggers (Devvit)](https://developers.reddit.com/docs/capabilities/server/triggers)
-- [Devvit Web](https://developers.reddit.com/docs/)
+1. Mod opens:
+
+“Abrir ModAiGuard Panel” from mod tools menu.
+
+2. Dashboard loads allowing:
+
+* Run AI moderation
+* Detect toxicity or spam
+* Generate recommendations
+* Review reports
+* Manage auto-responder rules
+* Browse logs
+* Check history of specific posts
+* Test in demo mode
+
+Everything happens inside Reddit.
+
+⸻
+
+📌 Installation (Dev Mode)
+
+npm install
+npm run dev
+This:
+
+* Builds React client
+* Serves Hono backend
+* Playtests directly into <subreddit>?playtest=modaiguard
+
+⸻
+
+📦 Build & Upload
+
+npm run build
+npm run deploy
+
+🔒 License
+
+MIT License (Recommended for hackathon + GitHub).
+
+👥 Credits
+
+Developed by Brian (Briannamedranoc)
+AI-assisted development with Cursor + ChatGPT
+Built for the Reddit Mod Tools Hackathon 2026
+
+🌟 Why It Matters (Hackathon Pitch)
+
+Moderation on Reddit is 100% volunteer-based.
+Mods are overloaded.
+Queues pile up.
+Harassment, spam, and malicious content slip through.
+
+ModAiGuard solves:
+
+* Slow manual review
+* Repetitive mod tasks
+* High cognitive load
+* No centralized dashboard
+* No analytics
+* No auto-moderation
+* No AI decision support
+
+With this tool, ANY community — even small ones — can operate like a professional moderation team with:
+
+* instant analysis
+* structured decisions
+* automatic triage
+* complete audit trails
+* optional auto-moderation
+* optional demo mode for safe testing
